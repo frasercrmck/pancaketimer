@@ -82,16 +82,29 @@ if __name__ == "__main__":
     colour_choices = [str(v.name.lower()) for v in Colour]
 
     parser = argparse.ArgumentParser(description='')
+
+    modes = {
+            'crepe'   : [80, 40, 10],
+            'pancake' : [85, 60, 5],
+    }
+
     parser.add_argument('--side1-time', type=float, default=85)
     parser.add_argument('--side2-time', type=float, default=60)
     parser.add_argument('--flip-time', type=float, default=5)
     parser.add_argument('--repeat-count', type=int, default=1)
     parser.add_argument('--colour', choices=colour_choices,
                         default=colour_choices[0])
+    parser.add_argument('--mode', choices=modes.keys(),
+            help="Sets (and overwrites) side1/side2/flip values:\n"
+                 "{0}".format([[k, vals] for k,vals in modes.items()]))
 
 
     args = parser.parse_args()
     args.colour = Colour[args.colour.upper()]
+
+    if args.mode in modes:
+        args.side1_time, args.side2_time, args.flip_time =\
+                modes[args.mode]
 
     _, columns = subprocess.check_output(['stty', 'size']).decode().split()
 
