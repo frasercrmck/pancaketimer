@@ -2,10 +2,21 @@ import os
 import sys
 import time
 import argparse
+import platform
 import subprocess
 from enum import Enum
 
-vlc = '/Applications/VLC.app/Contents/MacOS/VLC'
+# This is silly
+system = platform.system()
+if system == 'Linux':
+    vlc = 'cvlc'
+elif system == 'Darwin':
+    vlc= '/Applications/VLC.app/Contents/MacOS/VLC'
+else:
+    sys.stderr.write(f"Could not identify platform '{system}': "
+                      "(only supports 'Linux' or 'Darwin')\n")
+    sys.exit(1)
+
 beep_file = f'file://{os.path.dirname(os.path.abspath(__file__))}/beep.mov'
 
 def beep():
