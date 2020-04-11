@@ -89,7 +89,8 @@ def time_pancake(side1_time, side2_time, flip_time, tty_width, colour):
 
     return
 
-if __name__ == "__main__":
+
+def main():
     colour_choices = [str(v.name.lower()) for v in Colour]
 
     parser = argparse.ArgumentParser(description='')
@@ -125,3 +126,11 @@ if __name__ == "__main__":
                      colour=args.colour)
         if i != args.repeat_count - 1:
             input("Press Enter to continue...")
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        sys.stdout.write("Enjoy your pancakes!\n")
+        sys.exit(0)
