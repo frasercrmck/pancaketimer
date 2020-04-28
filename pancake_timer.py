@@ -58,36 +58,33 @@ def write_progress_bar(bar_width, total_width, text, colour):
     )
     sys.stdout.flush()
 
+
+def time_side(beep_time, colour, total_width):
+    threshold = 0
+
+    bar_fill = total_width
+    step = float(total_width) / beep_time
+
+    t = 0
+    start = time.perf_counter()
+    while t <= beep_time:
+        t = time.perf_counter() - start
+        if t >= threshold:
+            write_progress_bar(bar_fill, total_width,
+                               '{0:>2}/{1}'.format(
+                                   int(beep_time) - int(t), int(beep_time)),
+                               colour)
+            bar_fill -= step
+            threshold += time_step
+
+
 def time_pancake(side1_time, side2_time, flip_time, tty_width, colour):
     total_width = int(tty_width - 2)
-    for i, beep_time in enumerate([side1_time, side2_time]):
-        threshold = time_step
-
-        bar_fill = total_width
-        step = float(total_width) / beep_time
-
-        write_progress_bar(total_width, total_width,
-                           '{0:>2}/{0}'.format(int(beep_time)), colour)
-
-        start = time.perf_counter()
-        while True:
-            t = time.perf_counter() - start
-            if t > threshold:
-                bar_fill -= step
-                threshold += time_step
-                write_progress_bar(bar_fill, total_width,
-                                   '{0:>2}/{1}'.format(
-                                       int(beep_time - t + 1), int(beep_time)),
-                                   colour)
-            if t > beep_time:
-                write_progress_bar(bar_fill, total_width, "FLIP FLIP FLIP!",
-                                   colour)
-                beep()
-                break
-        if i != 1:
-            time.sleep(flip_time)
-
-    return
+    time_side(side1_time, colour, total_width)
+    write_progress_bar(0, total_width, "FLIP FLIP FLIP!", colour)
+    beep()
+    time.sleep(flip_time)
+    time_side(side2_time, colour, total_width)
 
 
 def main():
